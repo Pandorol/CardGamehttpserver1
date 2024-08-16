@@ -9,13 +9,12 @@
         "mysql": "^2.18.1"
     },
     "devDependencies": {
-        "nodemon": "^3.1.4",
-        "webpack": "^5.93.0",
-        "webpack-cli": "^5.1.4"
+        "nodemon": "^3.1.4"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon index.js"
+        "start": "nodemon index.js",
+        "build": "webpack"
     },
     "author": "Jo",
     "license": "ISC"
