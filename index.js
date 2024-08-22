@@ -3,8 +3,15 @@ var express = require('express');
 var bodyParser = require('body-parser'); // 导入 body-parser 模块
 var mysql = require('mysql');
 var app = express();
+var { createClient } = require('redis'); // 导入 redis 模块
+// 创建 Redis 客户端并连接
+var redisClient = createClient({
+    url: 'redis://8.138.172.203:6379' // 你可以根据你的 Redis 服务器配置调整 URL
+});
 
-
+redisClient.connect().catch(err => {
+    console.error('Redis 连接失败: ', err);
+});
 var db = mysql.createPool({
     connectionLimit: 10,
     host: '8.138.172.203',
@@ -203,7 +210,20 @@ app.post("/uploadposter", function (req, res) {
     });
 
 });
-
+// 获取房间列表接口
+app.post("/getroomlist", async function (req, res) {
+    try {
+        const rooms = await redisClient.hGetAll("rooms"); // 获取所有房间数据
+        const roomList = Object.keys(rooms).map(roomId => JSON.parse(rooms[roomId])); // 解析房间数据
+        res.status(200).json({
+            msg: '获取成功',
+            data: roomList
+        });
+    } catch (err) {
+        console.error('获取房间列表失败: ', err);
+        res.status(500).send({ msg: '获取房间列表失败' });
+    }
+});
 var server = http.createServer(app);
 server.listen(8084);
 console.log('Server is running on port 8084');
