@@ -13,7 +13,6 @@ redisClient.connect().catch(err => {
     console.error('Redis 连接失败: ', err);
 });
 var db = mysql.createPool({
-    connectionLimit: 10,
     host: '8.138.172.203',
     user: 'poster',
     password: 'w8ecc7BLfAfX6ZCK',
