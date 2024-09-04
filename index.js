@@ -50,8 +50,20 @@ app.post("/register", function (req, res) {
             res.status(200).send({ msg: '注册失败,' + errmsg });
             return;
         }
+        let userid = result.insertId
+        let desks = JSON.stringify([[0, 0, 0, 1, 2, 2, 1, 0, 0, 0]])
+        let cards = JSON.stringify([1, 2])
+        var sql2 = 'INSERT INTO logindatas (userid, desks,cards) VALUES (?, ?,?)';
+        db.query(sql2, [userid, desks, cards], function (err, result) {
+            if (err) {
 
-        res.status(200).send({ msg: '注册成功' });
+                res.status(200).send({ msg: '注册成功，但初始化数据失败' });
+                return;
+            }
+            res.status(200).send({ msg: '注册成功' });
+        })
+
+
     });
 });
 // 用户登录接口
@@ -61,6 +73,10 @@ app.post("/login", function (req, res) {
     //console.log(req.body)
     // 查找用户
     var sql = 'SELECT * FROM users WHERE useraccount = ?';
+    let ret = {}
+    ret.msg = '登录成功'
+    ret.sucess = 1
+
     db.query(sql, [useraccount], function (err, results) {
         if (err) {
             res.status(200).send({ msg: '查询错误' });
@@ -75,12 +91,16 @@ app.post("/login", function (req, res) {
         var user = results[0];
 
         if (userpassword == user.userpassword) {
-            res.status(200).send({ msg: '登录成功', sucess: 1, userid: user.userid });
+            ret.userid = user.userid
+            res.status(200).json(ret)
+            res.end();
+
         } else {
             res.status(200).send({ msg: '密码错误' });
         }
 
     });
+
 });
 app.post("/getpostermorebefore", function (req, res) {
 
