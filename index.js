@@ -2,6 +2,7 @@ var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser'); // 导入 body-parser 模块
 var mysql = require('mysql');
+var cors = require('cors');
 var app = express();
 var { createClient } = require('redis'); // 导入 redis 模块
 // 创建 Redis 客户端并连接
@@ -28,6 +29,11 @@ var db = mysql.createPool({
 //     console.log('已连接到数据库');
 // });
 
+app.use(cors({
+    origin: true, // Allows all origins
+    methods: ['GET', 'POST'], // Allow specific methods
+    allowedHeaders: ['Content-Type'], // Allow specific headers
+}));
 
 // 中间件解析 JSON 格式的请求体
 app.use(bodyParser.json());
